@@ -230,6 +230,7 @@ body main .gameContainer .box .tag {
   font-size: small;
   font-weight: 600;
   text-transform: uppercase;
+  background: white;
 }
 
 .card .playcard .button {
