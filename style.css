@@ -32,7 +32,7 @@ body .barWrapper {
 
 body .barWrapper .crossBar {
   width: 100%;
-  margin-top: 50px;
+  margin-top: 60px;
   display: -ms-grid;
   display: grid;
   place-content: center;
@@ -232,6 +232,8 @@ body main .gameContainer .box .tag {
   font-weight: 600;
   text-transform: uppercase;
   background: white;
+  outline: none;
+  border: none;
 }
 
 .card .playcard .button {
