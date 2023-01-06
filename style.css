@@ -1,0 +1,258 @@
+* {
+  margin: 0;
+  padding: 0;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+}
+
+body {
+  width: 100%;
+  height: 100vh;
+  background: #0a1e28;
+}
+
+body .barWrapper {
+  position: fixed;
+  top: 0;
+  left: 0;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  width: 100%;
+  height: 100%;
+  display: none;
+}
+
+body .barWrapper .crossBar {
+  width: 100%;
+  margin-top: 50px;
+  display: -ms-grid;
+  display: grid;
+  place-content: center;
+  max-width: 300px;
+  height: 300px;
+  position: relative;
+}
+
+body .barWrapper .crossBar .boxx {
+  width: 10px;
+  background: rgba(56, 94, 143, 0.781);
+  -webkit-box-shadow: 0 0 20px 0 blue;
+          box-shadow: 0 0 20px 0 blue;
+  height: 100%;
+  position: absolute;
+  display: none;
+}
+
+body .barWrapper .crossBar .boxx:nth-child(1) {
+  left: 50px;
+}
+
+body .barWrapper .crossBar .boxx:nth-child(2) {
+  right: 50px;
+}
+
+body .barWrapper .crossBar .boxx:nth-child(3) {
+  left: 50%;
+}
+
+body .barWrapper .crossBar .boxx:nth-child(4) {
+  width: 100%;
+  height: 10px;
+  top: 50px;
+}
+
+body .barWrapper .crossBar .boxx:nth-child(5) {
+  width: 100%;
+  height: 10px;
+  bottom: 50px;
+}
+
+body .barWrapper .crossBar .boxx:nth-child(6) {
+  width: 100%;
+  height: 10px;
+  top: 50%;
+}
+
+body .barWrapper .crossBar .boxx:nth-child(7) {
+  left: 40%;
+  top: -20px;
+  height: 400px;
+  -webkit-transform: rotate(135deg) translate(-40px);
+          transform: rotate(135deg) translate(-40px);
+}
+
+body .barWrapper .crossBar .boxx:nth-child(8) {
+  left: 63%;
+  top: -10px;
+  height: 400px;
+  -webkit-transform: rotate(-135deg) translate(60px);
+          transform: rotate(-135deg) translate(60px);
+}
+
+body main {
+  width: 100%;
+  height: 100%;
+  display: -ms-grid;
+  display: grid;
+  place-content: center;
+  display: none;
+  grid-gap: 10px;
+}
+
+body main .counter {
+  width: 300px;
+  height: 50px;
+  background: silver;
+  border-bottom: 3px solid black;
+  border-top: 3px solid black;
+  border-radius: 10px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  padding: 0 10px;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+body main .counter h3 {
+  font-family: 'Segoe UI';
+  text-transform: uppercase;
+  width: 100px;
+}
+
+body main .counter .livescore {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -ms-flex-pack: distribute;
+      justify-content: space-around;
+  width: 40%;
+  height: 100%;
+  color: #e1e9ee;
+  border-bottom-left-radius: 20px;
+  border-bottom-right-radius: 20px;
+  background: #0b3457;
+}
+
+body main .counter .livescore span {
+  font-weight: bold;
+  font-size: 30px;
+}
+
+body main .gameContainer {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+  width: 300px;
+  height: 300px;
+  background: #0a1e28;
+  -webkit-box-shadow: 0px 0px 10px 0px;
+          box-shadow: 0px 0px 10px 0px;
+}
+
+body main .gameContainer .box {
+  display: -ms-grid;
+  display: grid;
+  place-content: center;
+  color: white;
+  width: 100px;
+  height: 100px;
+  border: 1px solid white;
+}
+
+body main .gameContainer .box .tag {
+  font-size: 50px;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  font-weight: bold;
+}
+
+.card {
+  position: fixed;
+  top: 0;
+  left: 0;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  background: rgba(0, 0, 0, 0.5);
+  -webkit-transition: 1s;
+  transition: 1s;
+  width: 100%;
+  height: 100%;
+}
+
+.card .playcard {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  width: 100%;
+  max-width: 400px;
+  background: #0d6460;
+  grid-gap: 20px;
+  padding: 30px;
+}
+
+.card .playcard h2 {
+  color: white;
+  font-weight: bold;
+  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}
+
+.card .playcard input {
+  height: 40px;
+  padding: 10px;
+  color: orange;
+  font-size: small;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.card .playcard .button {
+  width: 100%;
+  padding: 5px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+}
+
+.card .playcard .button button {
+  height: 40px;
+  width: 40%;
+  outline: none;
+  border: none;
+  font-weight: bold;
+  color: #e1e9ee;
+  background: #d66320;
+  letter-spacing: 1px;
+  -webkit-box-shadow: 0px 0px 5px 0px;
+          box-shadow: 0px 0px 5px 0px;
+}
+/*# sourceMappingURL=style.css.map */
