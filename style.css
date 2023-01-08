@@ -5,10 +5,127 @@
           box-sizing: border-box;
 }
 
+button {
+  outline: none;
+  border: none;
+  background: #d86e31;
+}
+
 body {
   width: 100%;
   height: 100vh;
   background: #0a1e28;
+  overflow-y: hidden;
+}
+
+body .homePage {
+  width: 100%;
+  height: 100%;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  font-family: Tahoma;
+}
+
+body .homePage h1 {
+  font-size: 3em;
+  margin-bottom: 30px;
+  color: white;
+}
+
+body .homePage .actions {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  width: 70%;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  grid-gap: 30px;
+}
+
+body .homePage .actions button {
+  width: 40%;
+  height: 60px;
+  color: white;
+  font-size: 20px;
+  font-weight: bold;
+  -webkit-box-shadow: 5px 5px 10px 0 #0c1d0c;
+          box-shadow: 5px 5px 10px 0 #0c1d0c;
+  border-radius: 20px;
+}
+
+@media (max-width: 600px) {
+  body .homePage .actions {
+    width: 100%;
+  }
+  body .homePage .actions button {
+    width: 70%;
+  }
+}
+
+body .help {
+  font-family: 'Courier New';
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  width: 100%;
+  height: 100%;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  display: none;
+}
+
+body .help h1 {
+  font-size: 40px;
+  color: white;
+}
+
+body .help .instructions {
+  width: 50%;
+  padding: 20px;
+  background: white;
+}
+
+body .help .instructions p {
+  font-size: 25px;
+  line-height: 40px;
+  letter-spacing: 1px;
+  text-align: justify;
+  text-transform: uppercase;
+}
+
+@media (max-width: 600px) {
+  body .help .instructions {
+    width: 100%;
+    padding: 10px;
+  }
+  body .help .instructions p {
+    font-size: 20px;
+    letter-spacing: normal;
+  }
 }
 
 body .barWrapper {
@@ -31,7 +148,7 @@ body .barWrapper {
 
 body .barWrapper .crossBar {
   width: 100%;
-  margin-top: 100px;
+  margin-top: 80px;
   display: -ms-grid;
   display: grid;
   place-content: center;
@@ -186,9 +303,7 @@ body main .gameContainer .box .tag {
   position: fixed;
   top: 0;
   left: 0;
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
+  display: none;
   -webkit-box-pack: center;
       -ms-flex-pack: center;
           justify-content: center;
@@ -249,11 +364,8 @@ body main .gameContainer .box .tag {
 .card .playcard .button button {
   height: 40px;
   width: 40%;
-  outline: none;
-  border: none;
   font-weight: bold;
   color: #e1e9ee;
-  background: #d66320;
   letter-spacing: 1px;
   -webkit-box-shadow: 0px 0px 5px 0px;
           box-shadow: 0px 0px 5px 0px;

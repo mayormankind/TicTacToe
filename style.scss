@@ -3,11 +3,95 @@
     padding:0;
     box-sizing: border-box;
 }
+button{
+    outline: none;
+    border: none;
+    background: hsl(22, 68%, 52%);
+}
 body{
     width: 100%;
     height: 100vh;
     background: rgb(10,30,40);
-    // overflow: hidden;
+    overflow-y: hidden;
+    .homePage{
+        width: 100%;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        font-family: Tahoma;
+        h1{
+            font-size: 3em;
+            margin-bottom: 30px;
+            color: white;
+        }
+        .actions{
+            display: flex;
+            width: 70%;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            grid-gap: 30px;
+            button{
+                width: 40%;
+                height: 60px;
+                color: white;
+                font-size: 20px;
+                font-weight: bold;
+                box-shadow: 5px 5px 10px 0 hsl(120, 41%, 8%);
+                border-radius: 20px;
+            }
+        }
+    }
+    @media (max-width:'600px'){
+        .homePage{
+            .actions{
+                width: 100%;
+                button{
+                    width: 70%;
+                }
+            }
+        }
+    }
+    .help{
+        font-family: 'Courier New';
+        // display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        height: 100%;
+        flex-direction: column;
+        display: none;
+        h1{
+            font-size: 40px;
+            color: white;
+        }
+        .instructions{
+            width: 50%;
+            padding: 20px;
+            background: white;
+            p{
+                font-size: 25px;
+                line-height: 40px;
+                letter-spacing: 1px;
+                text-align: justify;
+                text-transform: uppercase;
+            }
+        }
+    }
+    @media (max-width:'600px'){
+        .help{
+            .instructions{
+                width: 100%;
+                padding: 10px;
+                p{
+                    font-size: 20px;
+                    letter-spacing: normal;
+                }
+            }
+        }
+    }
     .barWrapper{
         position: fixed;
         top: 0;
@@ -20,7 +104,7 @@ body{
         display: none;
         .crossBar{
             width: 100%;
-            margin-top: 100px;
+            margin-top: 80px;
             display: grid;
             place-content: center;
             max-width: 300px;
@@ -139,7 +223,8 @@ body{
     position: fixed;
     top: 0;
     left: 0;
-    display: flex;
+    // display: flex;
+    display: none;
     justify-content: center;
     align-items: center;
     background: rgba(0,0,0,0.5);
@@ -178,11 +263,8 @@ body{
             button{
                 height: 40px;
                 width: 40%;
-                outline: none;
-                border: none;
                 font-weight: bold;
                 color: rgb(225, 233, 238);
-                background: rgb(214, 99, 32);
                 letter-spacing: 1px;
                 box-shadow: 0px 0px 5px 0px ;
             }

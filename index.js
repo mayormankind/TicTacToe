@@ -1,6 +1,5 @@
 const app = document.querySelector('.gameContainer');
 const game = document.querySelector('.app');
-
 let currentplayer = 'X';
 
 //this block for the players name input 
@@ -17,6 +16,19 @@ const submitBut = document.querySelector('.add');
 const barWrapper = document.querySelector('.barWrapper');
 const crossBar = document.querySelector('.crossBar');
 const turnIndicator = document.querySelectorAll('.turnIndicator');
+
+const helpButton = document.querySelector('#help');
+const homepage = document.querySelector('.homePage');
+const helpSection = document.querySelector('.help');
+const multiplayButton = document.querySelector('#multiplayer');
+helpButton.addEventListener('click',(e)=>{
+    helpSection.style.display = 'flex';
+    homepage.style.display = 'none';
+});
+multiplayButton.addEventListener('click',(e)=>{
+    homepage.style.display = 'none';
+    playersInputCard.style.display = 'flex';
+});
 
 if(location.reload){
     localStorage.clear();
