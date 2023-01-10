@@ -20,14 +20,23 @@ const turnIndicator = document.querySelector('.turnIndicator');
 const helpButton = document.querySelector('#help');
 const homepage = document.querySelector('.homePage');
 const helpSection = document.querySelector('.help');
+const cancelButton = document.querySelectorAll('.cancel');
 const multiplayButton = document.querySelector('#multiplayer');
+
+cancelButton.forEach(but=>{
+    but.addEventListener('click',()=>{
+        homepage.style.display = 'flex';
+        playersInputCard.style.display = 'none';
+    })
+})
 helpButton.addEventListener('click',(e)=>{
     helpSection.style.display = 'flex';
     homepage.style.display = 'none';
 });
 multiplayButton.addEventListener('click',(e)=>{
-    homepage.style.display = 'none';
     playersInputCard.style.display = 'flex';
+    helpSection.style.display = 'none';
+    homepage.style.display = 'none';
 });
 
 if(location.reload){

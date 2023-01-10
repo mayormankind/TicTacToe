@@ -11,6 +11,38 @@ button {
   background: #d86e31;
 }
 
+.wrap {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-pack: distribute;
+      justify-content: space-around;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  width: 70%;
+}
+
+.wrap .cancel {
+  font-family: fantasy;
+  color: white;
+  font-size: 35px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.wrap .cancel:hover {
+  text-shadow: 0 0 10px red;
+  -webkit-transform: translateY(-5px);
+          transform: translateY(-5px);
+}
+
+@media (max-width: 600px) {
+  .wrap {
+    width: 100%;
+  }
+}
+
 body {
   width: 100%;
   height: 100vh;
@@ -164,6 +196,7 @@ body .barWrapper .crossBar .boxx {
           box-shadow: 0 0 20px 0 blue;
   height: 100%;
   position: absolute;
+  display: none;
 }
 
 body .barWrapper .crossBar .boxx:nth-child(1) {
@@ -225,9 +258,9 @@ body main {
 body main .turnIndicator {
   text-align: center;
   color: white;
-  font-weight: 100;
-  font-size: 25px;
-  font-family: 'Segoe UI';
+  font-weight: bold;
+  font-size: 20px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 body main .counter {
