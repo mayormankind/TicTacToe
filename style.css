@@ -148,7 +148,7 @@ body .barWrapper {
 
 body .barWrapper .crossBar {
   width: 100%;
-  margin-top: 80px;
+  margin-top: 50px;
   display: -ms-grid;
   display: grid;
   place-content: center;
@@ -164,7 +164,6 @@ body .barWrapper .crossBar .boxx {
           box-shadow: 0 0 20px 0 blue;
   height: 100%;
   position: absolute;
-  display: none;
 }
 
 body .barWrapper .crossBar .boxx:nth-child(1) {
@@ -221,6 +220,14 @@ body main {
   place-content: center;
   display: none;
   grid-gap: 10px;
+}
+
+body main .turnIndicator {
+  text-align: center;
+  color: white;
+  font-weight: 100;
+  font-size: 25px;
+  font-family: 'Segoe UI';
 }
 
 body main .counter {

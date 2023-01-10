@@ -15,7 +15,7 @@ const score2 = document.querySelector('.score2');
 const submitBut = document.querySelector('.add');
 const barWrapper = document.querySelector('.barWrapper');
 const crossBar = document.querySelector('.crossBar');
-const turnIndicator = document.querySelectorAll('.turnIndicator');
+const turnIndicator = document.querySelector('.turnIndicator');
 
 const helpButton = document.querySelector('#help');
 const homepage = document.querySelector('.homePage');
@@ -59,6 +59,7 @@ boxes.forEach((box)=>{
             box.classList.replace('unfilled','filled');
             isWinner(currentplayer);
             currentplayer = (currentplayer=='X')?'O':'X';
+            (currentplayer=='X')?turnIndicator.innerHTML = `<p>It is ${squid1.value}'s turn </p>`:(turnIndicator.innerHTML = `<p>It is ${squid2.value}'s turn </p>`);
         }
         NoWinner();
     })
@@ -164,6 +165,4 @@ function NoWinner(){
         clearBoard();
         clearBars();
     }
-    // if(filledCounter>=9){
-    // }
 };
