@@ -4,14 +4,15 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Pick n' Toe</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>  
     <section class="homePage">
         <h1>Pick n' Toe</h1>
         <div class="actions">
-            <button id=''>Vs Computer</button>
+            <button id='online'>Battle Online</button>
+            <button id='vsComputer'>Vs Computer</button>
             <button id='multiplayer'>One Vs One</button>
             <button id='help'>Help</button>
         </div>
@@ -22,7 +23,7 @@
             <span class="cancel">x</span>
         </div>
         <div class="instructions">
-            <p>To play the game, all you need to do is click any of the boxes. The one vs one variant of the game is designed in rounds of 7. the first player to reach score <b>seven(7)</b> wins and the game reloads again. Play fair. 😎🤗</p>
+            <p>To play the game, all you need to do is click any of the boxes. The one vs one variant of the game is designed in rounds of 7. the first player to reach score <b>seven(7)</b> wins and the game reloads again. Play fair!!! 😎🤗</p>
         </div>
     </section>
     <div class="barWrapper">
@@ -56,14 +57,35 @@
                 <h2>Players Card</h2>
                 <span class="cancel">x</span>
             </div>
-            <input type="text" name="" id="squid1" placeholder="Enter player one's name">
-            <input type="text" name="" id="squid2" placeholder="Enter player two's name">
+            <input type="text" name="" id="squid1" placeholder="Enter player one's name" required>
+            <input type="text" name="" id="squid2" placeholder="Enter player two's name" required>
             <div class="button">
-                <button type="submit" class="add">Start Game</button>
+                <button type="submit" class="playMP">Start Game</button>
                 <button type="reset">Reset Players</button>
             </div>
         </form>
     </div>
+    <div class="card2 card">
+        <form class="playcard">
+            <div class="wrap">
+                <h2>Players Card</h2>
+                <span class="cancel">x</span>
+            </div>
+            <input type="text" name="" id="squidVsC" placeholder="Enter Your name" required>
+            <div class="button">
+                <button type="submit" class="playVsC">Start Game</button>
+                <button type="reset">Reset Players</button>
+            </div>
+        </form>
+    </div>
+    <div class="winnerPage">
+        <p class="winnerQuote"></p>
+        <div class="actions">
+            <button id="toMenu">Back to Menu</button>
+            <button id="playAgain">Play again</button>
+        </div>
+    </div>
 </body>
+<script src="//unpkg.com/brain.js"></script>
 <script src="index.js"></script>
 </html>

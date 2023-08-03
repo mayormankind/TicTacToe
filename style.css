@@ -8,26 +8,28 @@
 button {
   outline: none;
   border: none;
+  /* background: #d86e31; */
   background: #d86e31;
 }
 
+form button{
+  background: #0b3457;
+}
 .wrap {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
-  -ms-flex-pack: distribute;
-      justify-content: space-around;
+  /* -ms-flex-pack: distribute; */
+      justify-content: space-between;
   -webkit-box-align: center;
       -ms-flex-align: center;
           align-items: center;
-  width: 70%;
+  width: 100%;
 }
 
 .wrap .cancel {
-  font-family: fantasy;
-  color: white;
+  color: #0b3457;
   font-size: 35px;
-  font-weight: bold;
   cursor: pointer;
 }
 
@@ -180,7 +182,7 @@ body .barWrapper {
 
 body .barWrapper .crossBar {
   width: 100%;
-  margin-top: 50px;
+  margin-top: 22px;
   display: -ms-grid;
   display: grid;
   place-content: center;
@@ -192,8 +194,8 @@ body .barWrapper .crossBar {
 body .barWrapper .crossBar .boxx {
   width: 10px;
   background: rgba(56, 94, 143, 0.781);
-  -webkit-box-shadow: 0 0 20px 0 blue;
-          box-shadow: 0 0 20px 0 blue;
+  -webkit-box-shadow: 0 0 20px 0 #1c1cf2;
+          box-shadow: 0 0 20px 0 #1c1cf2;
   height: 100%;
   position: absolute;
   display: none;
@@ -381,7 +383,7 @@ body main .gameContainer .box .tag {
 .card .playcard input {
   height: 40px;
   padding: 10px;
-  color: orange;
+  color: #0d6460;
   font-size: small;
   font-weight: 600;
   text-transform: uppercase;
@@ -409,5 +411,56 @@ body main .gameContainer .box .tag {
   letter-spacing: 1px;
   -webkit-box-shadow: 0px 0px 5px 0px;
           box-shadow: 0px 0px 5px 0px;
+}
+
+.winnerPage{
+  width: 100%;
+  height:100vh;
+  gap:30px;
+  display: none;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.winnerPage .winnerQuote{
+  color: white;
+  text-align: center;
+  font-size: 40px;
+  text-transform: capitalize;
+  animation: opac 2s linear infinite;
+}
+
+@keyframes opac{
+  0%{opacity:0;}
+  50%{opacity:0.5;}
+  100%{opacity:1;}
+}
+
+.winnerPage div{
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  gap: 20px;
+  align-items: center;
+}
+.winnerPage div button{
+  width: 40%;
+  height: 60px;
+  color: white;
+  font-size: 20px;
+  font-weight: bold;
+  -webkit-box-shadow: 5px 5px 10px 0 #0c1d0c;
+          box-shadow: 5px 5px 10px 0 #0c1d0c;
+  border-radius: 20px;
+}
+
+@media (max-width: 600px) {
+  .winnerPage div{
+    width: 100%;
+  }
+  .winnerPage div button {
+    width: 70%;
+  }
 }
 /*# sourceMappingURL=style.css.map */
