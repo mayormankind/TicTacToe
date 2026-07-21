@@ -6,7 +6,7 @@ const SOCKET_URL = import.meta.env.VITE_SOCKET_URL || 'http://localhost:3000';
 export function useOnlineGame(playerName) {
   const socketRef = useRef(null);
 
-  const [phase, setPhase] = useState('finding'); // 'finding' | 'playing' | 'round_end' | 'match_end' | 'disconnected'
+  const [phase, setPhase] = useState('finding'); // 'finding' | 'matched' | 'playing' | 'round_end' | 'match_end' | 'disconnected'
   const [board, setBoard] = useState(Array(9).fill(null));
   const [currentPlayer, setCurrentPlayer] = useState('X');
   const [mySymbol, setMySymbol] = useState(null);
@@ -35,7 +35,8 @@ export function useOnlineGame(playerName) {
         X: symbol === 'X' ? playerName : opponent,
         O: symbol === 'O' ? playerName : opponent,
       });
-      setPhase('playing');
+      setPhase('matched');
+      setTimeout(() => setPhase('playing'), 2500);
     });
 
     socket.on('moveMade', ({ board: newBoard, nextPlayer, winningCombo: combo }) => {

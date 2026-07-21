@@ -7,7 +7,7 @@ const app = express();
 app.use(cors());
 
 app.get('/', (req, res) => {
-  res.send('Pick n\' Toe server is running');
+  res.send('🎮 Pick n\' Toe server is running');
 });
 
 const httpServer = createServer(app);

@@ -40,6 +40,20 @@ export function OnlineGame({ playerName, onBackToMenu }) {
     );
   }
 
+  if (phase === 'matched') {
+    return (
+      <div class="online-game finding">
+        <h2>Match Found!</h2>
+        <div class="match-found-players">
+          <span class="match-player">{playerNames.X}</span>
+          <span class="match-vs">VS</span>
+          <span class="match-player">{playerNames.O}</span>
+        </div>
+        <p class="match-target">First to {winTarget} wins</p>
+      </div>
+    );
+  }
+
   if (phase === 'disconnected') {
     return (
       <div class="winner-page">

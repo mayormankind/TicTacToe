@@ -684,6 +684,37 @@ button:active {
   }
 }
 
+.match-found-players {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.match-player {
+  font-size: clamp(1.2rem, 4vw, 1.6rem);
+  font-weight: 800;
+  color: var(--text-light);
+  max-width: 160px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-align: center;
+}
+
+.match-vs {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--primary-color);
+  opacity: 0.8;
+}
+
+.match-target {
+  font-size: 1rem;
+  color: var(--text-light);
+  opacity: 0.6;
+  font-weight: 500;
+}
+
 .online-game.finding button {
   padding: 12px 32px;
   font-size: 1rem;
