@@ -40,14 +40,16 @@ export function PlayerForm({ mode, onSubmit, onCancel }) {
             required
           />
         )}
-        <div class="rounds-selector">
-          <label>Wins to win match</label>
-          <div class="rounds-controls">
-            <button type="button" onClick={decrementRounds}>−</button>
-            <span>{rounds}</span>
-            <button type="button" onClick={incrementRounds}>+</button>
+        {mode !== 'online' && (
+          <div class="rounds-selector">
+            <label>Wins to win match</label>
+            <div class="rounds-controls">
+              <button type="button" onClick={decrementRounds}>−</button>
+              <span>{rounds}</span>
+              <button type="button" onClick={incrementRounds}>+</button>
+            </div>
           </div>
-        </div>
+        )}
         <div class="button">
           <button type="submit">Start</button>
           <button type="reset" onClick={() => { setPlayer1(''); setPlayer2(''); setRounds(7); }}>

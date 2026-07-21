@@ -168,6 +168,8 @@ export function App() {
       setShowPlayerForm(true);
     } else if (gameState.gameMode === 'vs') {
       setShowDifficultySelector(true);
+    } else if (gameState.gameMode === 'online') {
+      setShowPlayerForm(true);
     }
     setScreen('home');
   };

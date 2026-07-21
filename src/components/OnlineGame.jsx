@@ -1,82 +1,50 @@
-import { useState, useEffect } from 'preact/hooks';
-import io from 'socket.io-client';
-import { checkWinner, checkDraw } from '../utils/gameLogic';
-
-const SOCKET_URL = 'http://localhost:3000';
+import { useOnlineGame } from '../hooks/useOnlineGame';
 
 export function OnlineGame({ playerName, onBackToMenu }) {
-  const [socket, setSocket] = useState(null);
-  const [gameState, setGameState] = useState('finding'); // 'finding', 'playing', 'finished'
-  const [board, setBoard] = useState(Array(9).fill(null));
-  const [currentPlayer, setCurrentPlayer] = useState('X');
-  const [mySymbol, setMySymbol] = useState(null);
-  const [opponentName, setOpponentName] = useState('Opponent');
-  const [winner, setWinner] = useState(null);
-  const [roomId, setRoomId] = useState(null);
-
-  useEffect(() => {
-    const newSocket = io(SOCKET_URL);
-    setSocket(newSocket);
-
-    newSocket.emit('findMatch', playerName);
-
-    newSocket.on('matchFound', ({ room, symbol, opponent }) => {
-      setRoomId(room);
-      setMySymbol(symbol);
-      setOpponentName(opponent);
-      setGameState('playing');
-    });
-
-    newSocket.on('moveMade', ({ board: newBoard, nextPlayer }) => {
-      setBoard(newBoard);
-      setCurrentPlayer(nextPlayer);
-      
-      const result = checkWinner(newBoard);
-      if (result) {
-        setWinner(result.winner);
-        setGameState('finished');
-      } else if (checkDraw(newBoard)) {
-        setWinner('Draw');
-        setGameState('finished');
-      }
-    });
-
-    newSocket.on('opponentDisconnected', () => {
-      alert('Opponent disconnected');
-      onBackToMenu();
-    });
-
-    return () => {
-      newSocket.close();
-    };
-  }, [playerName, onBackToMenu]);
+  const {
+    phase,
+    board,
+    currentPlayer,
+    mySymbol,
+    opponentName,
+    scores,
+    winTarget,
+    winningCombo,
+    roundResult,
+    matchWinner,
+    rematchState,
+    playerNames,
+    makeMove,
+    cancelSearch,
+    offerRematch,
+    declineRematch,
+  } = useOnlineGame(playerName);
 
   const handleCellClick = (index) => {
-    if (board[index] || currentPlayer !== mySymbol || gameState !== 'playing') return;
-    
-    socket.emit('makeMove', { room: roomId, index });
+    if (board[index] || currentPlayer !== mySymbol || phase !== 'playing') return;
+    makeMove(index);
   };
 
-  if (gameState === 'finding') {
+  const handleCancel = () => {
+    cancelSearch();
+    onBackToMenu();
+  };
+
+  if (phase === 'finding') {
     return (
       <div class="online-game finding">
         <h2>Finding Match...</h2>
         <div class="spinner"></div>
-        <button onClick={onBackToMenu}>Cancel</button>
+        <button onClick={handleCancel}>Cancel</button>
       </div>
     );
   }
 
-  if (gameState === 'finished') {
-    const resultText = winner === 'Draw' 
-      ? "It's a Draw!" 
-      : winner === mySymbol 
-        ? 'You Win!' 
-        : 'You Lose!';
-    
+  if (phase === 'disconnected') {
     return (
       <div class="winner-page">
-        <p class="winner-quote">{resultText}</p>
+        <p class="winner-quote">Opponent Left</p>
+        <p class="winner-name">{opponentName} disconnected from the match</p>
         <div class="actions">
           <button onClick={onBackToMenu}>Back to Menu</button>
         </div>
@@ -84,16 +52,68 @@ export function OnlineGame({ playerName, onBackToMenu }) {
     );
   }
 
+  if (phase === 'match_end') {
+    const iWon = matchWinner === mySymbol;
+
+    return (
+      <div class="winner-page">
+        <p class="winner-quote">{iWon ? 'You Win the Match!' : 'You Lost the Match'}</p>
+        <p class="winner-name">
+          {playerNames.X} {scores.X} — {scores.O} {playerNames.O}
+        </p>
+        <div class="actions">
+          {rematchState === 'idle' && (
+            <>
+              <button onClick={offerRematch}>Rematch</button>
+              <button onClick={onBackToMenu}>Back to Menu</button>
+            </>
+          )}
+          {rematchState === 'waiting' && (
+            <>
+              <p class="rematch-status">Waiting for {opponentName}...</p>
+              <button onClick={onBackToMenu}>Back to Menu</button>
+            </>
+          )}
+          {rematchState === 'offered' && (
+            <>
+              <p class="rematch-status">{opponentName} wants a rematch!</p>
+              <button onClick={offerRematch}>Accept</button>
+              <button onClick={declineRematch}>Decline</button>
+            </>
+          )}
+          {rematchState === 'declined' && (
+            <>
+              <p class="rematch-status">Rematch declined</p>
+              <button onClick={onBackToMenu}>Back to Menu</button>
+            </>
+          )}
+        </div>
+      </div>
+    );
+  }
+
+  const turnText = phase === 'round_end'
+    ? roundResult?.isDraw
+      ? "It's a Draw! Next round starting..."
+      : roundResult?.winner === mySymbol
+        ? 'You won this round! Next round starting...'
+        : `${opponentName} won this round! Next round starting...`
+    : currentPlayer === mySymbol
+      ? 'Your turn'
+      : `${opponentName}'s turn`;
+
   return (
     <main class="app">
       <div class="counter">
-        <h3 class="playerX">{mySymbol === 'X' ? playerName : opponentName}</h3>
+        <h3 class="playerX">{playerNames.X}</h3>
         <div class="livescore">
-          <span>VS</span>
+          <span class="score1">{scores.X}</span>
+          -
+          <span class="score2">{scores.O}</span>
         </div>
-        <h3 class="playerO">{mySymbol === 'O' ? playerName : opponentName}</h3>
+        <h3 class="playerO">{playerNames.O}</h3>
       </div>
-      
+
       <div class="game-container">
         {board.map((cell, index) => (
           <div
@@ -104,10 +124,21 @@ export function OnlineGame({ playerName, onBackToMenu }) {
             {cell && <span class="tag">{cell}</span>}
           </div>
         ))}
+        {winningCombo && (
+          <div class="bar-wrapper">
+            <div class="cross-bar">
+              <div class={`boxx line-${winningCombo.join('-')}`}></div>
+            </div>
+          </div>
+        )}
       </div>
 
       <div class="turn-indicator">
-        <p>{currentPlayer === mySymbol ? "Your turn" : `${opponentName}'s turn`}</p>
+        <p>{turnText}</p>
+      </div>
+
+      <div class="win-target-info">
+        <p>First to {winTarget} wins</p>
       </div>
     </main>
   );

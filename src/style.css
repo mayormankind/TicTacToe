@@ -544,19 +544,7 @@ button:active {
   position: absolute;
   background: linear-gradient(135deg, #2ecc71, #27ae60);
   box-shadow: 0 0 30px #2ecc71, 0 0 60px #2ecc71;
-  animation: lineGrow 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
   border-radius: 10px;
-}
-
-@keyframes lineGrow {
-  from {
-    transform: scale(0);
-    opacity: 0;
-  }
-  to {
-    transform: scale(1);
-    opacity: 1;
-  }
 }
 
 /* Define specific win line styles */
