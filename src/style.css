@@ -684,6 +684,22 @@ button:active {
   }
 }
 
+.online-game.finding button {
+  padding: 12px 32px;
+  font-size: 1rem;
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+  border-radius: 8px;
+  background-color: var(--primary-color);
+  color: var(--text-light);
+  transition: opacity 0.2s;
+}
+
+.online-game.finding button:hover {
+  opacity: 0.85;
+}
+
 /* ============================================
    HISTORY PAGE
    ============================================ */
@@ -806,10 +822,9 @@ button:active {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
-  padding: 40px 20px;
-  gap: 25px;
+  padding: 50px 30px 70px;
+  gap: 40px;
 }
 
 .replay-header {
@@ -817,7 +832,7 @@ button:active {
   justify-content: space-between;
   align-items: center;
   width: 100%;
-  max-width: 420px;
+  max-width: 480px;
 }
 
 .replay-header h2 {
@@ -828,8 +843,17 @@ button:active {
   -webkit-text-fill-color: transparent;
 }
 
+.replay-board-container {
+  width: 100%;
+  max-width: 420px;
+}
+
 .replay-board-container .game-container {
   pointer-events: none;
+}
+
+.replay-board-container .tag {
+  font-size: clamp(3rem, 8vw, 4.5rem);
 }
 
 .replay-info {
@@ -840,7 +864,8 @@ button:active {
   min-height: 3rem;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 10px;
+  max-width: 420px;
 }
 
 .replay-result {
@@ -853,8 +878,8 @@ button:active {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 12px;
-  max-width: 420px;
+  gap: 14px;
+  max-width: 480px;
 }
 
 .replay-controls button {

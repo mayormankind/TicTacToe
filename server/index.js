@@ -6,6 +6,10 @@ import cors from 'cors';
 const app = express();
 app.use(cors());
 
+app.get('/', (req, res) => {
+  res.send('Pick n\' Toe server is running');
+});
+
 const httpServer = createServer(app);
 const io = new Server(httpServer, {
   cors: {
