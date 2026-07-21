@@ -27,6 +27,12 @@ export function OnlineGame({ playerName, onBackToMenu }) {
 
   const handleCancel = () => {
     cancelSearch();
+    try { sessionStorage.removeItem('ttt_online_session'); } catch {}
+    onBackToMenu();
+  };
+
+  const handleBackToMenu = () => {
+    try { sessionStorage.removeItem('ttt_online_session'); } catch {}
     onBackToMenu();
   };
 
@@ -34,6 +40,16 @@ export function OnlineGame({ playerName, onBackToMenu }) {
     return (
       <div class="online-game finding">
         <h2>Finding Match...</h2>
+        <div class="spinner"></div>
+        <button onClick={handleCancel}>Cancel</button>
+      </div>
+    );
+  }
+
+  if (phase === 'rejoining') {
+    return (
+      <div class="online-game finding">
+        <h2>Reconnecting...</h2>
         <div class="spinner"></div>
         <button onClick={handleCancel}>Cancel</button>
       </div>
@@ -60,7 +76,7 @@ export function OnlineGame({ playerName, onBackToMenu }) {
         <p class="winner-quote">Opponent Left</p>
         <p class="winner-name">{opponentName} disconnected from the match</p>
         <div class="actions">
-          <button onClick={onBackToMenu}>Back to Menu</button>
+          <button onClick={handleBackToMenu}>Back to Menu</button>
         </div>
       </div>
     );
@@ -79,13 +95,13 @@ export function OnlineGame({ playerName, onBackToMenu }) {
           {rematchState === 'idle' && (
             <>
               <button onClick={offerRematch}>Rematch</button>
-              <button onClick={onBackToMenu}>Back to Menu</button>
+              <button onClick={handleBackToMenu}>Back to Menu</button>
             </>
           )}
           {rematchState === 'waiting' && (
             <>
               <p class="rematch-status">Waiting for {opponentName}...</p>
-              <button onClick={onBackToMenu}>Back to Menu</button>
+              <button onClick={handleBackToMenu}>Back to Menu</button>
             </>
           )}
           {rematchState === 'offered' && (
@@ -98,7 +114,7 @@ export function OnlineGame({ playerName, onBackToMenu }) {
           {rematchState === 'declined' && (
             <>
               <p class="rematch-status">Rematch declined</p>
-              <button onClick={onBackToMenu}>Back to Menu</button>
+              <button onClick={handleBackToMenu}>Back to Menu</button>
             </>
           )}
         </div>

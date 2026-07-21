@@ -13,14 +13,24 @@ import { checkWinner, checkDraw } from './utils/gameLogic';
 import { getAIMove } from './utils/ai';
 
 export function App() {
-  const [screen, setScreen] = useState('home');
+  const [screen, setScreen] = useState(() => sessionStorage.getItem('app_screen') || 'home');
   const [showDifficultySelector, setShowDifficultySelector] = useState(false);
   const [showPlayerForm, setShowPlayerForm] = useState(false);
   const [winningCombo, setWinningCombo] = useState(null);
-  const [gameWinner, setGameWinner] = useState(null);
+  const [gameWinner, setGameWinner] = useState(() => sessionStorage.getItem('app_winner') || null);
   const [selectedGame, setSelectedGame] = useState(null);
 
   const gameState = useGameState();
+
+  useEffect(() => {
+    if (screen === 'home') sessionStorage.removeItem('app_screen');
+    else sessionStorage.setItem('app_screen', screen);
+  }, [screen]);
+
+  useEffect(() => {
+    if (gameWinner) sessionStorage.setItem('app_winner', gameWinner);
+    else sessionStorage.removeItem('app_winner');
+  }, [gameWinner]);
 
   const handleSelectMode = (mode) => {
     if (mode === 'help') {
@@ -153,6 +163,8 @@ export function App() {
   };
 
   const handleBackToMenu = () => {
+    sessionStorage.removeItem('app_screen');
+    sessionStorage.removeItem('app_winner');
     setScreen('home');
     gameState.resetGame();
     setWinningCombo(null);

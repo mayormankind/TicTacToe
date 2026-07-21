@@ -43,6 +43,8 @@ function checkDraw(board) {
 const waitingPlayers = [];
 const activeGames = new Map();
 const rematchOffers = new Map(); // roomId -> Set of socket ids who offered
+const disconnectTimers = new Map(); // `${roomId}${symbol}` -> timer
+const RECONNECT_WINDOW_MS = 10000;
 
 io.on('connection', (socket) => {
   console.log('Player connected:', socket.id);
@@ -173,6 +175,41 @@ io.on('connection', (socket) => {
     if (idx !== -1) waitingPlayers.splice(idx, 1);
   });
 
+  socket.on('rejoinMatch', ({ roomId, name, symbol }) => {
+    const game = activeGames.get(roomId);
+    if (!game || game.players[symbol]?.name !== name) {
+      socket.emit('rejoinFailed');
+      return;
+    }
+
+    const timerKey = roomId + symbol;
+    if (disconnectTimers.has(timerKey)) {
+      clearTimeout(disconnectTimers.get(timerKey));
+      disconnectTimers.delete(timerKey);
+    }
+
+    game.players[symbol].id = socket.id;
+    socket.join(roomId);
+
+    const opponentSymbol = symbol === 'X' ? 'O' : 'X';
+    const opponentId = game.players[opponentSymbol].id;
+
+    socket.emit('rejoinSuccess', {
+      room: roomId,
+      symbol,
+      opponent: game.players[opponentSymbol].name,
+      winTarget: WIN_TARGET,
+      board: game.board,
+      currentPlayer: game.currentPlayer,
+      scores: game.scores,
+      phase: game.phase,
+      playerNames: { X: game.players.X.name, O: game.players.O.name },
+    });
+
+    if (opponentId) io.to(opponentId).emit('opponentRejoined');
+    console.log(`${name} rejoined ${roomId}`);
+  });
+
   socket.on('disconnect', () => {
     console.log('Player disconnected:', socket.id);
 
@@ -182,11 +219,28 @@ io.on('connection', (socket) => {
     for (const [roomId, game] of activeGames.entries()) {
       if (game.players.X.id === socket.id || game.players.O.id === socket.id) {
         const isX = game.players.X.id === socket.id;
-        const opponentId = isX ? game.players.O.id : game.players.X.id;
-        const leaverName = isX ? game.players.X.name : game.players.O.name;
-        io.to(opponentId).emit('opponentDisconnected', { leaverName });
-        activeGames.delete(roomId);
-        rematchOffers.delete(roomId);
+        const symbol = isX ? 'X' : 'O';
+        const opponentSymbol = isX ? 'O' : 'X';
+        const opponentId = game.players[opponentSymbol].id;
+        const leaverName = game.players[symbol].name;
+
+        if (game.phase === 'finished') {
+          if (opponentId) io.to(opponentId).emit('opponentDisconnected', { leaverName });
+          activeGames.delete(roomId);
+          rematchOffers.delete(roomId);
+        } else {
+          game.players[symbol].id = null;
+          const timerKey = roomId + symbol;
+          const timer = setTimeout(() => {
+            if (opponentId) io.to(opponentId).emit('opponentDisconnected', { leaverName });
+            activeGames.delete(roomId);
+            rematchOffers.delete(roomId);
+            disconnectTimers.delete(timerKey);
+            console.log(`${leaverName} did not reconnect — room ${roomId} closed`);
+          }, RECONNECT_WINDOW_MS);
+          disconnectTimers.set(timerKey, timer);
+          console.log(`${leaverName} disconnected — waiting ${RECONNECT_WINDOW_MS / 1000}s for reconnect`);
+        }
         break;
       }
     }
