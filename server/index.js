@@ -18,8 +18,10 @@ const io = new Server(httpServer, {
   }
 });
 
-const WIN_TARGET = 3;
+// Must match the default in src/components/PlayerForm.jsx
+const WIN_TARGET = 7;
 
+// Keep in sync with src/utils/gameLogic.js
 const WINNING_COMBINATIONS = [
   [0, 1, 2], [3, 4, 5], [6, 7, 8],
   [0, 3, 6], [1, 4, 7], [2, 5, 8],
@@ -120,7 +122,11 @@ io.on('connection', (socket) => {
       if (isMatchOver) {
         game.phase = 'finished';
         setTimeout(() => {
-          io.to(room).emit('matchEnd', { winner: roundWinner, scores: { ...game.scores } });
+          io.to(room).emit('matchEnd', {
+            winner: roundWinner,
+            scores: { ...game.scores },
+            playerNames: { X: game.players.X.name, O: game.players.O.name },
+          });
         }, 2500);
       } else {
         setTimeout(() => {

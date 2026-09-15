@@ -1,6 +1,6 @@
 import { useOnlineGame } from '../hooks/useOnlineGame';
 
-export function OnlineGame({ playerName, onBackToMenu }) {
+export function OnlineGame({ playerName, onBackToMenu, onMatchComplete }) {
   const {
     phase,
     board,
@@ -18,7 +18,7 @@ export function OnlineGame({ playerName, onBackToMenu }) {
     cancelSearch,
     offerRematch,
     declineRematch,
-  } = useOnlineGame(playerName);
+  } = useOnlineGame(playerName, onMatchComplete);
 
   const handleCellClick = (index) => {
     if (board[index] || currentPlayer !== mySymbol || phase !== 'playing') return;
@@ -66,6 +66,18 @@ export function OnlineGame({ playerName, onBackToMenu }) {
           <span class="match-player">{playerNames.O}</span>
         </div>
         <p class="match-target">First to {winTarget} wins</p>
+      </div>
+    );
+  }
+
+  if (phase === 'error') {
+    return (
+      <div class="online-game finding">
+        <h2>Cannot Connect</h2>
+        <p style={{ color: 'var(--text-light)', opacity: 0.7, textAlign: 'center' }}>
+          Could not reach the game server.
+        </p>
+        <button onClick={handleBackToMenu}>Back to Menu</button>
       </div>
     );
   }

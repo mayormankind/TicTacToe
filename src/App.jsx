@@ -94,6 +94,9 @@ export function App() {
     // Check for winner
     const result = checkWinner(gameState.board);
     if (result) {
+      // Capture scores now — the closure won't refresh between the nested timeouts,
+      // so we need a stable baseline to compute the post-increment total.
+      const scoresBefore = gameState.scores;
       setWinningCombo(result.combination);
       setTimeout(() => {
         gameState.incrementScore(result.winner);
@@ -102,11 +105,10 @@ export function App() {
           gameState.resetBoard();
           setWinningCombo(null);
           
-          // Check if someone reached the win target
-          const updatedScores = { ...gameState.scores };
-          updatedScores[result.winner]++;
-          if (updatedScores.X >= gameState.winTarget || updatedScores.O >= gameState.winTarget) {
-            const winner = updatedScores.X >= gameState.winTarget ? gameState.playerNames.X : gameState.playerNames.O;
+          // Add 1 to the captured pre-increment score to get the accurate new total.
+          const newScores = { ...scoresBefore, [result.winner]: scoresBefore[result.winner] + 1 };
+          if (newScores.X >= gameState.winTarget || newScores.O >= gameState.winTarget) {
+            const winner = newScores.X >= gameState.winTarget ? gameState.playerNames.X : gameState.playerNames.O;
             setGameWinner(winner);
             setScreen('winner');
           }
@@ -186,6 +188,16 @@ export function App() {
     setScreen('home');
   };
 
+  const handleOnlineMatchComplete = (winner, playerNames) => {
+    gameState.saveGameRecord({
+      mode: 'online',
+      difficulty: null,
+      playerNames,
+      moves: [], // online moves are not tracked locally; replay is unavailable
+      result: winner,
+    });
+  };
+
   const handleReplayGame = (game) => {
     setSelectedGame(game);
     setScreen('replay');
@@ -246,9 +258,6 @@ export function App() {
           gameMode={gameState.gameMode}
           difficulty={gameState.difficulty}
           onMove={handleMove}
-          onSwitchPlayer={gameState.switchPlayer}
-          onIncrementScore={gameState.incrementScore}
-          onResetBoard={handleResetBoard}
           winningCombo={winningCombo}
         />
       )}
@@ -257,6 +266,7 @@ export function App() {
         <OnlineGame
           playerName={gameState.playerNames.X}
           onBackToMenu={handleBackToMenu}
+          onMatchComplete={handleOnlineMatchComplete}
         />
       )}
 

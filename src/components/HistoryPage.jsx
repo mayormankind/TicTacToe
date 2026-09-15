@@ -2,7 +2,6 @@ import { useMemo } from 'preact/hooks';
 
 function formatGameLabel(game) {
   const { mode, difficulty, playerNames, result } = game;
-  const human = playerNames.X;
   const opponent = mode === 'vs' ? `${difficulty} AI` : playerNames.O;
 
   if (result === 'draw') {
@@ -73,7 +72,9 @@ export function HistoryPage({ games, onReplay, onBack, onClear }) {
                 {dateGames.map(game => (
                   <div key={game.id} class="history-item">
                     <span class="history-label">{formatGameLabel(game)}</span>
-                    <button onClick={() => onReplay(game)}>Replay</button>
+                    {game.moves.length > 0 && (
+                      <button onClick={() => onReplay(game)}>Replay</button>
+                    )}
                   </div>
                 ))}
               </div>

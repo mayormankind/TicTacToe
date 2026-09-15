@@ -99,6 +99,15 @@ export function useGameState() {
     setCompletedGames(prev => [gameRecord, ...prev]);
   };
 
+  // For saving games whose record is built externally (e.g. online matches)
+  const saveGameRecord = (record) => {
+    setCompletedGames(prev => [{
+      id: Date.now().toString(),
+      date: new Date().toISOString(),
+      ...record,
+    }, ...prev]);
+  };
+
   const clearCompletedGames = () => {
     setCompletedGames([]);
   };
@@ -126,6 +135,7 @@ export function useGameState() {
     resetBoard,
     resetGame,
     saveCompletedGame,
+    saveGameRecord,
     clearCompletedGames,
   };
 }

@@ -1,7 +1,3 @@
-import { useEffect } from 'preact/hooks';
-import { checkWinner, checkDraw } from '../utils/gameLogic';
-import { getAIMove } from '../utils/ai';
-
 export function GameBoard({ 
   board, 
   currentPlayer,

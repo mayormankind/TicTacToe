@@ -634,6 +634,14 @@ button:active {
   }
 }
 
+.winner-name {
+  font-size: clamp(1.1rem, 3.5vw, 1.5rem);
+  font-weight: 700;
+  color: var(--text-light);
+  text-align: center;
+  opacity: 0.85;
+}
+
 .winner-page .actions {
   display: flex;
   flex-direction: column;

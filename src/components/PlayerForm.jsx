@@ -26,6 +26,7 @@ export function PlayerForm({ mode, onSubmit, onCancel }) {
         </div>
         <input
           type="text"
+          maxLength={20}
           placeholder={mode === 'vs' ? "Enter your name" : "Enter player one's name"}
           value={player1}
           onInput={(e) => setPlayer1(e.target.value)}
@@ -34,6 +35,7 @@ export function PlayerForm({ mode, onSubmit, onCancel }) {
         {mode === 'mp' && (
           <input
             type="text"
+            maxLength={20}
             placeholder="Enter player two's name"
             value={player2}
             onInput={(e) => setPlayer2(e.target.value)}
