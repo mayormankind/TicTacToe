@@ -8,9 +8,11 @@ import { OnlineGame } from './components/OnlineGame';
 import { WinnerScreen } from './components/WinnerScreen';
 import { HistoryPage } from './components/HistoryPage';
 import { ReplayPage } from './components/ReplayPage';
+import { LeaderboardPage } from './components/LeaderboardPage';
 import { useGameState } from './hooks/useGameState';
 import { checkWinner, checkDraw } from './utils/gameLogic';
 import { getAIMove } from './utils/ai';
+import { playMoveSound, playWinSound, playDrawSound } from './utils/sounds';
 
 export function App() {
   const [screen, setScreen] = useState(() => sessionStorage.getItem('app_screen') || 'home');
@@ -19,6 +21,10 @@ export function App() {
   const [winningCombo, setWinningCombo] = useState(null);
   const [gameWinner, setGameWinner] = useState(() => sessionStorage.getItem('app_winner') || null);
   const [selectedGame, setSelectedGame] = useState(null);
+
+  // Online-specific state passed down to OnlineGame
+  const [onlineMatchType, setOnlineMatchType] = useState('random');
+  const [onlineRoomCode, setOnlineRoomCode] = useState('');
 
   const gameState = useGameState();
 
@@ -37,6 +43,8 @@ export function App() {
       setScreen('help');
     } else if (mode === 'history') {
       setScreen('history');
+    } else if (mode === 'leaderboard') {
+      setScreen('leaderboard');
     } else if (mode === 'online') {
       setShowPlayerForm(true);
       gameState.setGameMode('online');
@@ -55,26 +63,29 @@ export function App() {
     setShowPlayerForm(true);
   };
 
-  const handlePlayerSubmit = ({ player1, player2, rounds }) => {
-    gameState.setPlayerNames({ X: player1, O: player2 });
+  const handlePlayerSubmit = ({ player1, player2, rounds, xColor, oColor, timerSeconds, matchType, roomCode }) => {
+    gameState.setPlayerNames({ X: player1, O: player2 || 'Player O' });
     if (rounds) gameState.setWinTarget(rounds);
+    if (xColor) gameState.setPlayerColors({ X: xColor, O: oColor || '#3498db' });
+    if (timerSeconds !== undefined) gameState.setTimerSeconds(timerSeconds);
     setShowPlayerForm(false);
-    
+
     if (gameState.gameMode === 'online') {
+      setOnlineMatchType(matchType || 'random');
+      setOnlineRoomCode(roomCode || '');
       setScreen('online');
     } else {
       setScreen('game');
     }
   };
 
-  // Game logic - check for wins/draws after each move
+  // ── Core game logic (win / draw / AI moves) ──────────────────────────────
   useEffect(() => {
     if (screen !== 'game' || winningCombo) return;
 
-    // Count filled cells to detect new moves
     const filledCells = gameState.board.filter(cell => cell !== null).length;
-    
-    // If board is empty and it's AI's turn (after a draw where nextStarter became 'O'), trigger AI first move
+
+    // Empty board + AI goes first (after a round where O starts)
     if (filledCells === 0) {
       if (gameState.gameMode === 'vs' && gameState.currentPlayer === 'O') {
         setTimeout(() => {
@@ -94,18 +105,18 @@ export function App() {
     // Check for winner
     const result = checkWinner(gameState.board);
     if (result) {
-      // Capture scores now — the closure won't refresh between the nested timeouts,
-      // so we need a stable baseline to compute the post-increment total.
+      // Capture scores before the async increment so the nested timeout
+      // can compute the correct post-increment total without stale closure issues.
       const scoresBefore = gameState.scores;
       setWinningCombo(result.combination);
+      playWinSound();
       setTimeout(() => {
         gameState.incrementScore(result.winner);
         setTimeout(() => {
           gameState.saveCompletedGame(result.winner);
           gameState.resetBoard();
           setWinningCombo(null);
-          
-          // Add 1 to the captured pre-increment score to get the accurate new total.
+
           const newScores = { ...scoresBefore, [result.winner]: scoresBefore[result.winner] + 1 };
           if (newScores.X >= gameState.winTarget || newScores.O >= gameState.winTarget) {
             const winner = newScores.X >= gameState.winTarget ? gameState.playerNames.X : gameState.playerNames.O;
@@ -119,6 +130,7 @@ export function App() {
 
     // Check for draw
     if (checkDraw(gameState.board)) {
+      playDrawSound();
       setTimeout(() => {
         gameState.saveCompletedGame('draw');
         gameState.resetBoard();
@@ -126,7 +138,7 @@ export function App() {
       return;
     }
 
-    // AI move for Vs Computer mode
+    // AI move
     if (gameState.gameMode === 'vs' && gameState.currentPlayer === 'O') {
       setTimeout(() => {
         const aiMoveIndex = getAIMove(gameState.board, gameState.difficulty);
@@ -143,24 +155,21 @@ export function App() {
 
   const handleMove = (index) => {
     if (gameState.board[index] || winningCombo) return;
-    
     const player = gameState.currentPlayer;
     const newBoard = [...gameState.board];
     newBoard[index] = player;
     gameState.setBoard(newBoard);
     gameState.recordMove(index, player);
     gameState.switchPlayer();
+    playMoveSound();
   };
 
-  const handleResetBoard = () => {
-    gameState.resetBoard();
-    setWinningCombo(null);
-    
-    // Check if someone reached the win target
-    if (gameState.scores.X >= gameState.winTarget || gameState.scores.O >= gameState.winTarget) {
-      const winner = gameState.scores.X >= gameState.winTarget ? gameState.playerNames.X : gameState.playerNames.O;
-      setGameWinner(winner);
-      setScreen('winner');
+  // When the turn timer expires, auto-place the piece in a random empty cell.
+  const handleTimeUp = () => {
+    if (winningCombo || screen !== 'game') return;
+    const empty = gameState.board.reduce((acc, cell, i) => (cell === null ? [...acc, i] : acc), []);
+    if (empty.length > 0) {
+      handleMove(empty[Math.floor(Math.random() * empty.length)]);
     }
   };
 
@@ -177,7 +186,7 @@ export function App() {
     gameState.resetGame();
     setWinningCombo(null);
     setGameWinner(null);
-    
+
     if (gameState.gameMode === 'mp') {
       setShowPlayerForm(true);
     } else if (gameState.gameMode === 'vs') {
@@ -193,7 +202,7 @@ export function App() {
       mode: 'online',
       difficulty: null,
       playerNames,
-      moves: [], // online moves are not tracked locally; replay is unavailable
+      moves: [], // online moves not tracked locally; replay unavailable
       result: winner,
     });
   };
@@ -212,6 +221,12 @@ export function App() {
     <>
       {screen === 'home' && <HomePage onSelectMode={handleSelectMode} />}
       {screen === 'help' && <HelpPage onClose={() => setScreen('home')} />}
+      {screen === 'leaderboard' && (
+        <LeaderboardPage
+          completedGames={gameState.completedGames}
+          onBack={() => setScreen('home')}
+        />
+      )}
       {screen === 'history' && (
         <HistoryPage
           games={gameState.completedGames}
@@ -254,10 +269,13 @@ export function App() {
           board={gameState.board}
           currentPlayer={gameState.currentPlayer}
           playerNames={gameState.playerNames}
+          playerColors={gameState.playerColors}
           scores={gameState.scores}
           gameMode={gameState.gameMode}
           difficulty={gameState.difficulty}
+          timerSeconds={gameState.timerSeconds}
           onMove={handleMove}
+          onTimeUp={handleTimeUp}
           winningCombo={winningCombo}
         />
       )}
@@ -265,6 +283,8 @@ export function App() {
       {screen === 'online' && (
         <OnlineGame
           playerName={gameState.playerNames.X}
+          matchType={onlineMatchType}
+          roomCode={onlineRoomCode}
           onBackToMenu={handleBackToMenu}
           onMatchComplete={handleOnlineMatchComplete}
         />
@@ -273,6 +293,10 @@ export function App() {
       {screen === 'winner' && (
         <WinnerScreen
           winner={gameWinner}
+          scores={gameState.scores}
+          playerNames={gameState.playerNames}
+          gameMode={gameState.gameMode}
+          difficulty={gameState.difficulty}
           onBackToMenu={handleBackToMenu}
           onPlayAgain={handlePlayAgain}
         />

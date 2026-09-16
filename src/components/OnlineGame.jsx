@@ -1,6 +1,7 @@
 import { useOnlineGame } from '../hooks/useOnlineGame';
+import { ChatBox } from './ChatBox';
 
-export function OnlineGame({ playerName, onBackToMenu, onMatchComplete }) {
+export function OnlineGame({ playerName, matchType, roomCode, onBackToMenu, onMatchComplete }) {
   const {
     phase,
     board,
@@ -14,11 +15,15 @@ export function OnlineGame({ playerName, onBackToMenu, onMatchComplete }) {
     matchWinner,
     rematchState,
     playerNames,
+    privateRoomCode,
+    privateRoomError,
+    messages,
     makeMove,
     cancelSearch,
     offerRematch,
     declineRematch,
-  } = useOnlineGame(playerName, onMatchComplete);
+    sendMessage,
+  } = useOnlineGame(playerName, matchType, roomCode, onMatchComplete);
 
   const handleCellClick = (index) => {
     if (board[index] || currentPlayer !== mySymbol || phase !== 'playing') return;
@@ -36,10 +41,26 @@ export function OnlineGame({ playerName, onBackToMenu, onMatchComplete }) {
     onBackToMenu();
   };
 
-  if (phase === 'finding') {
+  // ── Loading / search states ──
+
+  if (phase === 'finding' || phase === 'joining') {
     return (
       <div class="online-game finding">
-        <h2>Finding Match...</h2>
+        <h2>{phase === 'joining' ? 'Joining Room...' : 'Finding Match...'}</h2>
+        <div class="spinner"></div>
+        {privateRoomError && <p class="private-room-error">{privateRoomError}</p>}
+        <button onClick={handleCancel}>Cancel</button>
+      </div>
+    );
+  }
+
+  if (phase === 'waiting_for_friend') {
+    return (
+      <div class="online-game finding">
+        <h2>Room Created!</h2>
+        <p class="room-share-label">Share this code with your friend:</p>
+        <div class="room-code-display">{privateRoomCode ?? '------'}</div>
+        <p class="room-share-hint">Waiting for them to join...</p>
         <div class="spinner"></div>
         <button onClick={handleCancel}>Cancel</button>
       </div>
@@ -74,9 +95,7 @@ export function OnlineGame({ playerName, onBackToMenu, onMatchComplete }) {
     return (
       <div class="online-game finding">
         <h2>Cannot Connect</h2>
-        <p style={{ color: 'var(--text-light)', opacity: 0.7, textAlign: 'center' }}>
-          Could not reach the game server.
-        </p>
+        <p class="private-room-error">Could not reach the game server. Please try again.</p>
         <button onClick={handleBackToMenu}>Back to Menu</button>
       </div>
     );
@@ -99,7 +118,8 @@ export function OnlineGame({ playerName, onBackToMenu, onMatchComplete }) {
 
     return (
       <div class="winner-page">
-        <p class="winner-quote">{iWon ? 'You Win the Match!' : 'You Lost the Match'}</p>
+        <div class="winner-trophy">🏆</div>
+        <p class="winner-quote">{iWon ? 'You Win!' : 'You Lost'}</p>
         <p class="winner-name">
           {playerNames.X} {scores.X} — {scores.O} {playerNames.O}
         </p>
@@ -134,6 +154,7 @@ export function OnlineGame({ playerName, onBackToMenu, onMatchComplete }) {
     );
   }
 
+  // ── Active game board ──
   const turnText = phase === 'round_end'
     ? roundResult?.isDraw
       ? "It's a Draw! Next round starting..."
@@ -145,7 +166,7 @@ export function OnlineGame({ playerName, onBackToMenu, onMatchComplete }) {
       : `${opponentName}'s turn`;
 
   return (
-    <main class="app">
+    <main class="app online-app">
       <div class="counter">
         <h3 class="playerX">{playerNames.X}</h3>
         <div class="livescore">
@@ -182,6 +203,8 @@ export function OnlineGame({ playerName, onBackToMenu, onMatchComplete }) {
       <div class="win-target-info">
         <p>First to {winTarget} wins</p>
       </div>
+
+      <ChatBox messages={messages} onSend={sendMessage} myName={playerName} />
     </main>
   );
 }

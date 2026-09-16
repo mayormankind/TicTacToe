@@ -22,6 +22,8 @@ export function useGameState() {
   const [moveHistory, setMoveHistory] = useState(() => loadGameSession()?.moveHistory ?? []);
   const [nextStarter, setNextStarter] = useState(() => loadGameSession()?.nextStarter ?? 'X');
   const [winTarget, setWinTarget] = useState(() => loadGameSession()?.winTarget ?? 7);
+  const [playerColors, setPlayerColors] = useState(() => loadGameSession()?.playerColors ?? { X: '#d86e31', O: '#3498db' });
+  const [timerSeconds, setTimerSeconds] = useState(() => loadGameSession()?.timerSeconds ?? 0);
   const [completedGames, setCompletedGames] = useState(() => {
     try {
       const saved = localStorage.getItem('tictactoe_games');
@@ -42,10 +44,10 @@ export function useGameState() {
   useEffect(() => {
     try {
       sessionStorage.setItem(GAME_SESSION_KEY, JSON.stringify({
-        board, currentPlayer, scores, gameMode, playerNames, difficulty, moveHistory, nextStarter, winTarget,
+        board, currentPlayer, scores, gameMode, playerNames, difficulty, moveHistory, nextStarter, winTarget, playerColors, timerSeconds,
       }));
     } catch {}
-  }, [board, currentPlayer, scores, gameMode, playerNames, difficulty, moveHistory, nextStarter, winTarget]);
+  }, [board, currentPlayer, scores, gameMode, playerNames, difficulty, moveHistory, nextStarter, winTarget, playerColors, timerSeconds]);
 
   const makeMove = (index) => {
     if (board[index] !== null) return false;
@@ -83,6 +85,8 @@ export function useGameState() {
     setNextStarter('X');
     setScores({ X: 0, O: 0 });
     setWinTarget(7);
+    setTimerSeconds(0);
+    setPlayerColors({ X: '#d86e31', O: '#3498db' });
     try { sessionStorage.removeItem(GAME_SESSION_KEY); } catch {}
   };
 
@@ -120,6 +124,8 @@ export function useGameState() {
     playerNames,
     difficulty,
     winTarget,
+    playerColors,
+    timerSeconds,
     moveHistory,
     completedGames,
     setBoard,
@@ -128,6 +134,8 @@ export function useGameState() {
     setPlayerNames,
     setDifficulty,
     setWinTarget,
+    setPlayerColors,
+    setTimerSeconds,
     makeMove,
     switchPlayer,
     incrementScore,

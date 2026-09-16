@@ -6,6 +6,7 @@ export function HomePage({ onSelectMode }) {
         <button onClick={() => onSelectMode('online')}>Battle Online</button>
         <button onClick={() => onSelectMode('vs')}>Vs Computer</button>
         <button onClick={() => onSelectMode('mp')}>One Vs One</button>
+        <button onClick={() => onSelectMode('leaderboard')}>Leaderboard</button>
         <button onClick={() => onSelectMode('history')}>History</button>
         <button onClick={() => onSelectMode('help')}>Help</button>
       </div>
